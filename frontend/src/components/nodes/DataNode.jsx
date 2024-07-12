@@ -1,12 +1,16 @@
 import React, { memo } from 'react';
 import { Handle, Position } from '@xyflow/react';
 
-const BasicNode = memo(({ data }) => {
+const DataNode = memo(({ id, data }) => {
+  const onChange = (e) => {
+    data.onChange(id, 'data', e.target.value);  // Update 'data' field
+  };
+
   return (
     <div className="base-node relative">
       <button
         className="absolute top-2 right-2 text-gray-500 hover:text-red-500"
-        onClick={data.onRemove}
+        onClick={() => data.onRemove(id)}
       >
         ×
       </button>
@@ -15,12 +19,12 @@ const BasicNode = memo(({ data }) => {
       <div className="node-title">{data.label}</div>
       <div className="node-content">
         <div>
-          <label className="node-label">Name:</label>
-          <input
-            value={data.name || ''}
-            onChange={(e) => data.onChange(e.target.value, 'name')}
-            className="node-input"
-            placeholder="Enter name"
+          <label className="node-label">Data:</label>
+          <textarea
+            value={data.data || ''}
+            onChange={onChange}
+            className="node-input h-20 resize-none"
+            placeholder="Enter data"
           />
         </div>
       </div>
@@ -29,4 +33,4 @@ const BasicNode = memo(({ data }) => {
   );
 });
 
-export default BasicNode;
+export default DataNode;

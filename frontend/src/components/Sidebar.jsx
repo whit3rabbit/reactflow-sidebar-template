@@ -10,6 +10,10 @@ const nodeCategories = [
   {
     name: 'Complex Nodes',
     types: ['processingNode', 'decisionNode', 'dataNode']
+  },
+  {
+    name: 'Validated Nodes',
+    types: ['ipAddressNode', 'macAddressNode', 'passwordNode']
   }
 ];
 
@@ -35,6 +39,21 @@ const Sidebar = () => {
       type.toLowerCase().includes(searchTerm.toLowerCase())
     )
   })).filter(category => category.types.length > 0);
+
+  const getNodeDisplayName = (nodeType) => {
+    const displayNames = {
+      basicNode: 'Basic Node',
+      inputNode: 'Input Node',
+      outputNode: 'Output Node',
+      processingNode: 'Processing Node',
+      decisionNode: 'Decision Node',
+      dataNode: 'Data Node',
+      ipAddressNode: 'IP Address Node',
+      macAddressNode: 'MAC Address Node',
+      passwordNode: 'Password Node'
+    };
+    return displayNames[nodeType] || nodeType.charAt(0).toUpperCase() + nodeType.slice(1);
+  };
 
   return (
     <aside className="w-64 h-full bg-gray-900 text-gray-300 border-r border-gray-800 overflow-y-auto">
@@ -68,7 +87,7 @@ const Sidebar = () => {
                     draggable
                     onDragStart={(event) => onDragStart(event, nodeType)}
                   >
-                    {nodeType.charAt(0).toUpperCase() + nodeType.slice(1)}
+                    {getNodeDisplayName(nodeType)}
                   </div>
                 ))}
               </div>
