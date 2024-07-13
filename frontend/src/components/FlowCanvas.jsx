@@ -4,9 +4,9 @@ import {
   MiniMap,
   Controls,
   Background,
+  useNodesState,
+  useEdgesState,
   addEdge,
-  applyNodeChanges,
-  applyEdgeChanges,
   useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import useFlowStore from '../store/flowStore';
 import { saveFlow, loadFlow, validateFlow, initializeWebSocket, sendFlowUpdate } from '../services/api';
 import { debounce } from 'lodash';
+import { useDarkMode } from '../DarkModeProvider';
 
 // Import your custom node types
 import BasicNode from './nodes/BasicNode';
@@ -76,40 +77,29 @@ const FlowCanvas = () => {
     setError,
   } = useFlowStore();
 
-  const [nodes, setNodes] = useState(storeNodes);
-  const [edges, setEdges] = useState(storeEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState(storeNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(storeEdges);
 
   const [isLayouting, setIsLayouting] = useState(false);
   const [validationErrors, setValidationErrors] = useState([]);
-  const { fitView } = useReactFlow();
+  const { reactFlowInstance, fitView, getViewport } = useReactFlow();
   const websocketRef = useRef(null);
   const retryTimeoutRef = useRef(null);
+  const reactFlowWrapper = useRef(null);
+  const { isDarkMode } = useDarkMode();
+  const defaultViewport = { x: 0, y: 0, zoom: 0.5 };
 
   useEffect(() => {
     setNodes(storeNodes);
-  }, [storeNodes]);
+  }, [storeNodes, setNodes]);
 
   useEffect(() => {
     setEdges(storeEdges);
-  }, [storeEdges]);
-
-  const onNodesChange = useCallback(
-    (changes) => {
-      setNodes((nds) => applyNodeChanges(changes, nds));
-    },
-    []
-  );
-
-  const onEdgesChange = useCallback(
-    (changes) => {
-      setEdges((eds) => applyEdgeChanges(changes, eds));
-    },
-    []
-  );
+  }, [storeEdges, setEdges]);
 
   const onConnect = useCallback(
-    (connection) => setEdges((eds) => addEdge(connection, eds)),
-    []
+    (params) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges]
   );
 
   const onLayout = useCallback(() => {
@@ -118,18 +108,18 @@ const FlowCanvas = () => {
       setNodes(layoutedNodes);
       setEdges(layoutedEdges);
       window.requestAnimationFrame(() => {
-        fitView({ padding: 0.2, duration: 200 });
+        reactFlowInstance.fitView({ padding: 0.2, duration: 200 });
         setIsLayouting(false);
       });
     });
-  }, [nodes, edges, fitView]);
+  }, [nodes, edges, setNodes, setEdges, reactFlowInstance]);
 
   const onNodeRemove = useCallback(
     (id) => {
       removeNode(id);
       setNodes((nds) => nds.filter((node) => node.id !== id));
     },
-    [removeNode]
+    [removeNode, setNodes]
   );
 
   const onNodeChange = useCallback(
@@ -139,7 +129,7 @@ const FlowCanvas = () => {
         nds.map((node) => (node.id === id ? { ...node, data: { ...node.data, ...newData } } : node))
       );
     },
-    [updateNode]
+    [updateNode, setNodes]
   );
 
   const nodeTypes = useMemo(
@@ -246,20 +236,26 @@ const FlowCanvas = () => {
   const onDrop = useCallback(
     (event) => {
       event.preventDefault();
-      console.log('onDrop triggered');
 
       const type = event.dataTransfer.getData('application/reactflow');
-      console.log('Node type:', type);
       if (typeof type === 'undefined' || !type) {
-        console.log('Invalid node type, returning');
         return;
       }
 
-      const position = {
-        x: event.clientX - event.target.getBoundingClientRect().left,
-        y: event.clientY - event.target.getBoundingClientRect().top,
-      };
-      console.log('Drop position:', position);
+      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
+      let position = { x: 0, y: 0 };
+
+      if (reactFlowInstance && typeof reactFlowInstance.project === 'function') {
+        position = reactFlowInstance.project({
+          x: event.clientX - reactFlowBounds.left,
+          y: event.clientY - reactFlowBounds.top,
+        });
+      } else {
+        position = {
+          x: event.clientX - reactFlowBounds.left,
+          y: event.clientY - reactFlowBounds.top,
+        };
+      }
 
       const newNode = {
         id: `${type}-${Date.now()}`,
@@ -270,21 +266,24 @@ const FlowCanvas = () => {
           timestamp: Date.now(),
         },
       };
-      console.log('New node:', newNode);
 
       addNode(newNode);
-      console.log('Node added to store');
-      
       setNodes((nds) => [...nds, newNode]);
-      console.log('Nodes updated in component state');
 
-      // Adjust the fitView call to prevent excessive zooming
+      // Use the current zoom level as a basis for the new zoom
       setTimeout(() => {
-        fitView({ padding: 0.2, duration: 200, maxZoom: 1.5 });
-        console.log('View fitted');
-      }, 100);
+        const { zoom: currentZoom } = getViewport();
+        const newZoom = Math.max(currentZoom * 0.8, 0.2); // Increased zoom-out
+        
+        fitView({ 
+          padding: 0.2, 
+          minZoom: newZoom,
+          maxZoom: Math.max(currentZoom, 1.1),
+          duration: 800 
+        });
+      }, 50);
     },
-    [addNode, setNodes, fitView]
+    [reactFlowInstance, addNode, setNodes, fitView, getViewport]
   );
 
   const handleSaveFlow = useCallback(async () => {
@@ -403,9 +402,8 @@ const FlowCanvas = () => {
     return () => debouncedSendUpdate.cancel();
   }, [nodes, edges, debouncedSendUpdate]);
 
-  
   return (
-    <div className="w-full h-full bg-background">
+    <div className="w-full h-full bg-background" ref={reactFlowWrapper}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -415,11 +413,18 @@ const FlowCanvas = () => {
         nodeTypes={nodeTypes}
         onDrop={onDrop}
         onDragOver={onDragOver}
+        defaultViewport={defaultViewport}
         fitView
+        fitViewOptions={{ padding: 0.2, minZoom: 0.5, maxZoom: 1.5 }}
       >
         <Controls className="bg-background text-foreground" />
         <MiniMap className="bg-background" />
-        <Background variant="dots" gap={12} size={1} className="bg-muted" />
+        <Background
+          variant="dots"
+          gap={20}
+          size={1}
+          color={isDarkMode ? '#4a5568' : '#e2e8f0'}
+        />
       </ReactFlow>
       <div className="absolute top-4 right-4 space-x-2">
         <button 
