@@ -347,27 +347,32 @@ const FlowCanvas = () => {
     }, 5000); // Retry after 5 seconds
   }, []);
 
-  const initializeWebSocketConnection = useCallback(() => {
-    const handleUpdate = (data) => {
-      console.log('Received update:', data);
-      if (data.type === 'flowUpdate') {
-        setNodes(data.data.nodes || []);
-        setEdges(data.data.edges || []);
-      }
-    };
-
-    websocketRef.current = initializeWebSocket(handleUpdate);
-
-    websocketRef.current.onerror = (error) => {
-      console.error('WebSocket error:', error);
+  const initializeWebSocketConnection = useCallback(async () => {
+    try {
+      const handleUpdate = (data) => {
+        console.log('Received update:', data);
+        if (data.type === 'flowUpdate') {
+          setNodes(data.data.nodes || []);
+          setEdges(data.data.edges || []);
+        }
+      };
+  
+      websocketRef.current = await initializeWebSocket(handleUpdate);
+  
+      websocketRef.current.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        retryWebSocketConnection();
+      };
+  
+      websocketRef.current.onclose = (event) => {
+        console.log('WebSocket disconnected:', event.reason);
+        retryWebSocketConnection();
+      };
+    } catch (error) {
+      console.error('Failed to initialize WebSocket:', error);
       retryWebSocketConnection();
-    };
-
-    websocketRef.current.onclose = (event) => {
-      console.log('WebSocket disconnected:', event.reason);
-      retryWebSocketConnection();
-    };
-
+    }
+  
     return () => {
       if (websocketRef.current) {
         websocketRef.current.close();
@@ -377,9 +382,9 @@ const FlowCanvas = () => {
       }
     };
   }, [setNodes, setEdges, retryWebSocketConnection]);
-
+  
   useEffect(() => {
-    return initializeWebSocketConnection();
+    initializeWebSocketConnection();
   }, [initializeWebSocketConnection]);
 
   const debouncedSendUpdate = useCallback(
