@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { debounce } from 'lodash';
-import { validateIPAddress, validateMACAddress, validatePassword } from './validation';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const WEBSOCKET_URL = import.meta.env.VITE_WEBSOCKET_URL;
@@ -131,5 +130,3 @@ export const sendFlowUpdate = (flowData) => {
     if (DEBUG) console.log('Skipped duplicate update');
   }
 };
-
-export { validateIPAddress, validateMACAddress, validatePassword };

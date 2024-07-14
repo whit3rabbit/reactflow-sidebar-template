@@ -1,6 +1,6 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
 import { Handle, Position } from '@xyflow/react';
-import { validateIPAddress } from '../../services/validation';
+import { validateIPAddress } from '../../utils/helpers';
 
 const IPAddressNode = memo(({ id, data }) => {
   const [localIP, setLocalIP] = useState(data.ip || '');

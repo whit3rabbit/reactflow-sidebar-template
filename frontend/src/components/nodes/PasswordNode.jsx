@@ -1,6 +1,6 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
 import { Handle, Position } from '@xyflow/react';
-import { validatePassword } from '../../services/validation';
+import { validatePassword } from '../../utils/helpers';
 import { Eye, EyeOff } from 'lucide-react';
 
 const PasswordNode = memo(({ id, data }) => {

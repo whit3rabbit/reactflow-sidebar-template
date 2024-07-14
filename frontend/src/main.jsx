@@ -4,7 +4,7 @@ import App from './App.jsx';
 import './styles/index.css'   // Base styles, resets, etc.
 import './styles/global.css' // Your global styles and Tailwind directives
 import { ReactFlowProvider } from '@xyflow/react';
-import { DarkModeProvider } from './DarkModeProvider';
+import { DarkModeProvider } from './contexts/DarkModeProvider';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

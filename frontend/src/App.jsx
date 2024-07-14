@@ -1,6 +1,6 @@
 import React from 'react';
-import Sidebar from './components/Sidebar';
-import FlowCanvas from './components/FlowCanvas';
+import Sidebar from './components/Sidebar/index';
+import FlowCanvas from './components/FlowCanvas/index';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

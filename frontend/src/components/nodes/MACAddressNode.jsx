@@ -1,6 +1,6 @@
 import React, { memo, useState, useCallback, useEffect } from 'react';
 import { Handle, Position } from '@xyflow/react';
-import { validateMACAddress } from '../../services/validation';
+import { validateMACAddress } from '../../utils/helpers';
 
 const MACAddressNode = memo(({ id, data }) => {
   const [localMAC, setLocalMAC] = useState(data.mac || '');
