@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './styles/index.css'   // Base styles, resets, etc.
-import './styles/global.css' // Your global styles and Tailwind directives
+// import './styles/global.css' // Removed import for deleted file
 import { ReactFlowProvider } from '@xyflow/react';
 import { DarkModeProvider } from './DarkModeProvider';
 

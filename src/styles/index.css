@@ -87,8 +87,8 @@
     --card: 224 25% 15.5%; /* hsl(224 71% 4%) */
     --card-foreground: 213 31% 80%; /* hsl(213 31% 91%) */
 
-    --border: 216 24% 17%; /* hsl(216 34% 17%) */
-    --input: 216 24% 17%; /* hsl(216 34% 17%) */
+    --border: 216 24% 25%; /* Slightly lighter border hsl(216 24% 25%) */
+    --input: 216 24% 20%; /* Slightly lighter input bg hsl(216 24% 20%) */
 
     --primary: 210 20% 80%; /* hsl(210 20% 80%) */
     --primary-foreground: 222.2 27.4% 1.2%; /* hsl(222 47% 1%) */
@@ -143,5 +143,129 @@
 
     --chat-bot-icon: #235d70;
     --chat-user-icon: #4f3d6e;
+  }
+}
+
+/* Custom node base styles */
+.custom-node {
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--card-foreground));
+  /* @apply rounded-lg p-4 shadow-md text-sm transition-all duration-150 ease-in-out; */
+  /* Replaced @apply with direct CSS */
+  border-radius: var(--radius); /* Use CSS var directly */
+  padding: 1rem; /* p-4 */
+  box-shadow: var(--tw-shadow);
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25rem;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+
+  min-width: 150px;
+}
+
+.custom-node.selected {
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 15px 2px hsl(var(--primary) / 0.5);
+  /* @apply ring-2 ring-[hsl(var(--primary))]; */
+  /* Ring utilities map to box-shadow in Tailwind, complex to replicate manually without potentially conflicting */
+  /* For simplicity, let's omit the ring for now or add a simpler outline */
+   outline: 2px solid hsl(var(--primary) / 0.5);
+   outline-offset: 2px;
+}
+
+.custom-node .react-flow__handle {
+  background-color: hsl(var(--primary));
+  border-color: hsl(var(--background));
+  /* @apply w-3 h-3 rounded-full border-2; */
+  width: 0.75rem; /* w-3 */
+  height: 0.75rem; /* h-3 */
+  border-radius: 9999px; /* rounded-full */
+  border-width: 2px;
+}
+
+.custom-node .react-flow__handle-connecting {
+  background-color: hsl(var(--accent));
+  /* @apply ring-2 ring-[hsl(var(--accent))]; */
+  /* Omitting ring for simplicity */
+   outline: 2px solid hsl(var(--accent) / 0.5);
+   outline-offset: 2px;
+}
+
+/* Sidebar specific styles */
+.sidebar {
+  /* @apply overflow-y-auto overflow-x-hidden; */ /* Already applied via tailwind */
+}
+
+/* Style for input fields within nodes */
+.nodrag {
+  /* @apply nodrag; */ /* This is a reactflow specific class, leave it */
+}
+.node-input {
+  background-color: hsl(var(--input));
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--foreground));
+  /* @apply nodrag block w-full mt-1 px-2 py-1 rounded focus:outline-none focus:ring-1 focus:ring-[hsl(var(--primary))] text-xs; */
+  /* Applying relevant styles directly */
+  display: block;
+  width: 100%;
+  margin-top: 0.25rem; /* mt-1 */
+  padding: 0.25rem 0.5rem; /* px-2 py-1 */
+  border-radius: calc(var(--radius) - 4px); /* rounded (uses sm) */
+  font-size: 0.75rem; /* text-xs */
+  line-height: 1rem;
+}
+
+.node-input:focus {
+   outline: 2px solid transparent;
+   outline-offset: 2px;
+   /* Replicating focus:ring-1 focus:ring-[hsl(var(--primary))] */
+   --tw-ring-opacity: 1;
+   --tw-ring-color: hsl(var(--primary) / var(--tw-ring-opacity));
+   box-shadow: 0 0 0 1px var(--tw-ring-color);
+   border-color: hsl(var(--primary)); /* Often combined with ring */
+}
+
+.node-label {
+  color: hsl(var(--muted-foreground));
+  /* @apply block mb-1 text-xs font-medium; */
+  display: block;
+  margin-bottom: 0.25rem; /* mb-1 */
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 500; /* font-medium */
+  line-height: 1rem;
+}
+
+.node-title {
+  color: hsl(var(--foreground));
+  /* @apply text-base font-semibold mb-2; */
+  font-size: 1rem; /* text-base */
+  line-height: 1.5rem;
+  font-weight: 600; /* font-semibold */
+  margin-bottom: 0.5rem; /* mb-2 */
+}
+
+/* Edge Styles - These should be fine as they don't use @apply */
+.react-flow__edge-path {
+  stroke: #6d6c6c; /* Use direct hex value for dark theme connection */
+  /* stroke: hsl(var(--connection)); */ /* Original variable - removed */
+  stroke-width: 2;
+  transition: stroke 0.15s ease-in-out;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: hsl(var(--selected));
+  stroke-width: 3;
+  animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    filter: drop-shadow(0 0 3px hsl(var(--selected) / 0.7));
+  }
+  to {
+    filter: drop-shadow(0 0 6px hsl(var(--selected) / 0.9));
   }
 }

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   ReactFlow,
   addEdge,
@@ -68,19 +68,52 @@ const getLayoutedElements = (nodes, edges, options = {}) => {
 const FlowCanvas = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const { fitView, getZoom } = useReactFlow();
+  const { fitView, getZoom, getNode } = useReactFlow();
   const [isLayouting, setIsLayouting] = useState(false);
 
+  // Log edges state whenever it changes
+  useEffect(() => {
+    console.log('Edges state updated:', edges);
+  }, [edges]);
+
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
+    (params) => {
+      console.log('[onConnect] Attempting to connect:', params);
+      setEdges((eds) => {
+        const newEdges = addEdge(params, eds);
+        console.log('[onConnect] New edges array after addEdge:', newEdges);
+        return newEdges;
+      });
+    },
     [setEdges]
+  );
+
+  const isValidConnection = useCallback(
+    (connection) => {
+      const sourceNode = getNode(connection.source);
+      const targetNode = getNode(connection.target);
+
+      // Prevent connecting from an input node
+      if (sourceNode?.type === 'inputNode') {
+        return false;
+      }
+
+      // Prevent connecting to an output node
+      if (targetNode?.type === 'outputNode') {
+        return false;
+      }
+
+      // Allow all other connections
+      return true;
+    },
+    [getNode]
   );
 
   const onLayout = useCallback(() => {
     setIsLayouting(true);
     getLayoutedElements(nodes, edges, elkOptions).then(({ nodes: layoutedNodes, edges: layoutedEdges }) => {
       setNodes(layoutedNodes);
-      setEdges(layoutedEdges);
+      // setEdges(layoutedEdges); // Temporarily comment out to test interference
       window.requestAnimationFrame(() => {
         fitView();
         setIsLayouting(false);
@@ -156,6 +189,7 @@ const FlowCanvas = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        isValidConnection={isValidConnection}
         nodeTypes={nodeTypes}
         onDrop={onDrop}
         onDragOver={onDragOver}

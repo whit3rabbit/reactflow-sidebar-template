@@ -3,7 +3,6 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 import tailwindcssForms from "@tailwindcss/forms";
 import tailwindcssAnimate from "tailwindcss-animate";
 import tailwindcssTypography from "@tailwindcss/typography";
-import tailwindcssDottedBackground from "tailwindcss-dotted-background";
 
 import plugin from "tailwindcss/plugin";
 
@@ -26,7 +25,6 @@ const config = {
     "bg-status-red",
     "bg-status-yellow",
   ],
-  important: true,
   theme: {
     container: {
       center: true,
@@ -250,7 +248,6 @@ const config = {
       });
     }),
     tailwindcssTypography,
-    tailwindcssDottedBackground,
   ],
 };
 

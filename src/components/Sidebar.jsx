@@ -37,34 +37,36 @@ const Sidebar = () => {
   })).filter(category => category.types.length > 0);
 
   return (
-    <aside className="w-64 h-full bg-gray-900 text-gray-300 border-r border-gray-800 overflow-y-auto">
-      <div className="p-4">
-        <div className="relative mb-4">
+    <aside className="w-64 h-full bg-gray-900 text-gray-300 border-r border-gray-800 overflow-y-auto overflow-x-hidden flex flex-col">
+      <div className="p-4 border-b border-gray-800">
+        <div className="relative">
           <input 
             type="text" 
-            placeholder="Search nodes" 
+            placeholder="Search nodes"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-700 bg-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-300"
           />
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
         </div>
-        
+      </div>
+
+      <div className="flex-grow overflow-y-auto p-4">
         {filteredCategories.map((category) => (
           <div key={category.name} className="mb-4">
             <button 
-              className="flex items-center justify-between w-full p-2 bg-gray-800 rounded-md cursor-pointer hover:bg-gray-700 transition-colors"
+              className="flex items-center justify-between w-full p-3 bg-gray-800 rounded-md cursor-pointer hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-600"
               onClick={() => toggleCategory(category.name)}
             >
-              <span className="text-lg font-semibold text-gray-200">{category.name}</span>
-              {expandedCategories[category.name] ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+              <span className="text-base font-medium text-gray-200">{category.name}</span>
+              {expandedCategories[category.name] ? <ChevronDown className="w-4 h-4 text-gray-400" /> : <ChevronRight className="w-4 h-4 text-gray-400" />}
             </button>
             {expandedCategories[category.name] && (
-              <div className="mt-2 space-y-1">
+              <div className="mt-3 space-y-3 pl-4">
                 {category.types.map((nodeType) => (
                   <div
                     key={nodeType}
-                    className="p-2 rounded-md cursor-move bg-gray-800 hover:bg-gray-700 transition-colors"
+                    className="p-3 rounded border border-gray-700 cursor-move bg-gray-800 hover:bg-gray-700 hover:border-blue-600 transition-colors text-sm text-gray-300 active:opacity-75 active:cursor-grabbing"
                     draggable
                     onDragStart={(event) => onDragStart(event, nodeType)}
                   >
