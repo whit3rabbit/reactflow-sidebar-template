@@ -3,7 +3,7 @@ import { Handle, Position, type NodeProps } from '@xyflow/react';
 import { NodeFrame } from './NodeFrame';
 import type { FlowNodeData } from '@/lib/nodeCatalog';
 
-const DecisionNode = memo(({ data }: NodeProps<FlowNodeData>) => {
+const DecisionNode = memo(function DecisionNode({ data }: NodeProps<FlowNodeData>) {
   return (
     <>
       <Handle type="target" position={Position.Left} className="node-handle" />

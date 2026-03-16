@@ -46,7 +46,7 @@ const initialNodes: Node<FlowNodeData>[] = [];
 const initialEdges: Edge[] = [];
 
 const createNodeId = (type: NodeType) =>
-  `${type}-${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+  `${type}-${crypto.randomUUID()}`;
 
 const createStarterFlow = (): { nodes: Node<FlowNodeData>[]; edges: Edge[] } => ({
   nodes: [
@@ -110,7 +110,7 @@ const createStarterFlow = (): { nodes: Node<FlowNodeData>[]; edges: Edge[] } => 
   ],
 });
 
-function App() {
+function AppContent() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState<FlowNodeData>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -351,8 +351,10 @@ function App() {
   );
 }
 
-export default () => (
-  <ReactFlowProvider>
-    <App />
-  </ReactFlowProvider>
-);
+export default function App() {
+  return (
+    <ReactFlowProvider>
+      <AppContent />
+    </ReactFlowProvider>
+  );
+}

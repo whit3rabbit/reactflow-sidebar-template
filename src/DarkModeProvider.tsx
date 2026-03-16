@@ -82,7 +82,6 @@ export function DarkModeProvider({ children }: DarkModeProviderProps) {
       setSystemTheme(event.matches ? 'dark' : 'light');
     };
 
-    setSystemTheme(mediaQuery.matches ? 'dark' : 'light');
     mediaQuery.addEventListener('change', onChange);
 
     return () => mediaQuery.removeEventListener('change', onChange);
