@@ -17,7 +17,7 @@ React + TypeScript app using @xyflow/react (v12) for node-based flow editing. Vi
 
 **App.tsx** registers custom node types and wires up drag-and-drop from the sidebar onto the canvas. It delegates all node/edge state to the Zustand store.
 
-**State management:** `src/store/flowStore.ts` -- a Zustand store that owns nodes, edges, and all mutations (`addNode`, `onConnect`, `loadStarterFlow`, `clearCanvas`). Components consume it via `useFlowStore` selectors.
+**State management:** `src/store/flowStore.ts` -- a Zustand store that owns nodes, edges, and all mutations (`addNode`, `onConnect`, `loadStarterFlow`, `clearCanvas`). Components consume it via `useFlowStore` selectors. Uses controlled mode (nodes/edges as props) intentionally for clarity; if performance degrades at scale, see the uncontrolled flow pattern in App.tsx comments.
 
 **Drag-and-drop pattern:** Sidebar sets `application/reactflow` data on drag start. App's `onDrop` reads the type and creates a new node at the drop position via `screenToFlowPosition`.
 
@@ -39,3 +39,4 @@ React + TypeScript app using @xyflow/react (v12) for node-based flow editing. Vi
 - Tailwind v4 CSS-first: no `tailwind.config.js`. Directives (`@import "tailwindcss"`, `@custom-variant`, `@utility`) live in `src/styles/index.css`.
 - Dark mode: managed via `DarkModeProvider` context + `.dark` class on `<html>`. `@custom-variant dark` in CSS. Variables in `index.css` define light/dark theme tokens.
 - Styling is almost entirely custom CSS classes (BEM-style) using `hsl(var(--...))` custom properties. Very few Tailwind utility classes are used. The only custom utility is `custom-scroll` (defined via `@utility` in index.css).
+- Node components must use `NodeProps<FlowNodeData>` as their props type -- never bare `NodeProps` with `as any` casts. The `FlowNodeData` interface in `nodeCatalog.ts` defines all valid data fields.

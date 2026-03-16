@@ -546,7 +546,8 @@
 .palette-card:focus-visible,
 .search-field:focus-within,
 .node-input:focus,
-.node-remove:focus-visible {
+.node-remove:focus-visible,
+.edge-remove:focus-visible {
   outline: 2px solid hsl(var(--ring) / 0.68);
   outline-offset: 2px;
 }
@@ -891,6 +892,27 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
+}
+
+.edge-remove {
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1px solid hsl(var(--border) / 0.72);
+  border-radius: 50%;
+  background: hsl(var(--popover));
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
+}
+
+.edge-remove:hover,
+.edge-remove:focus-visible {
+  opacity: 1;
+  color: hsl(var(--destructive));
+  background: hsl(var(--accent));
 }
 
 .react-flow__edge-path {

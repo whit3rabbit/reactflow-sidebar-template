@@ -9,6 +9,7 @@ import {
   useReactFlow,
   MarkerType,
   type XYPosition,
+  type Connection,
 } from '@xyflow/react';
 import { Plus, Sparkles } from 'lucide-react';
 import { useTheme } from './DarkModeProvider';
@@ -19,6 +20,7 @@ import OutputNode from './components/nodes/OutputNode';
 import DecisionNode from './components/nodes/DecisionNode';
 import DataNode from './components/nodes/DataNode';
 import ProcessingNode from './components/nodes/ProcessingNode';
+import DeletableEdge from './components/edges/DeletableEdge';
 import { isNodeType, type NodeType } from './lib/nodeCatalog';
 import { useFlowStore } from './store/flowStore';
 import { getLayoutedElements } from './lib/autoLayout';
@@ -32,11 +34,18 @@ const nodeTypes = {
   processing: ProcessingNode,
 };
 
+const edgeTypes = {
+  deletable: DeletableEdge,
+};
+
 function AppContent() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const { screenToFlowPosition, fitView } = useReactFlow();
   const { resolvedTheme, themePreset } = useTheme();
 
+  // Controlled mode: nodes/edges passed as props causes re-renders on every change.
+  // Fine for small-to-medium graphs. For 100+ nodes, switch to uncontrolled mode
+  // with onInit + instance methods. See: https://reactflow.dev/learn/advanced-use/uncontrolled-flow
   const nodes = useFlowStore((s) => s.nodes);
   const edges = useFlowStore((s) => s.edges);
   const onNodesChange = useFlowStore((s) => s.onNodesChange);
@@ -44,7 +53,6 @@ function AppContent() {
   const onConnect = useFlowStore((s) => s.onConnect);
   const addNode = useFlowStore((s) => s.addNode);
   const storeLoadStarterFlow = useFlowStore((s) => s.loadStarterFlow);
-  const clearCanvas = useFlowStore((s) => s.clearCanvas);
   const applyLayout = useFlowStore((s) => s.applyLayout);
   const undoLayout = useFlowStore((s) => s.undoLayout);
   const hasPreviousLayout = useFlowStore((s) => s.previousNodes !== null);
@@ -126,6 +134,11 @@ function AppContent() {
     ember: resolvedTheme === 'dark' ? 'rgba(251, 146, 60, 0.18)' : 'rgba(249, 115, 22, 0.18)',
   } as const;
 
+  const isValidConnection = useCallback(
+    (connection: Connection) => connection.source !== connection.target,
+    []
+  );
+
   return (
     <div className="app-shell">
       <div className="app-shell__glow app-shell__glow--one" />
@@ -159,13 +172,16 @@ function AppContent() {
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
+            isValidConnection={isValidConnection}
             onDrop={onDrop}
             onDragOver={onDragOver}
             nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
             fitView
             colorMode={resolvedTheme}
             deleteKeyCode={['Backspace', 'Delete']}
             defaultEdgeOptions={{
+              type: 'deletable',
               markerEnd: { type: MarkerType.ArrowClosed },
             }}
             className="theme-attribution"

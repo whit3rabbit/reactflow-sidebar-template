@@ -3,7 +3,6 @@ import {
   addEdge,
   applyNodeChanges,
   applyEdgeChanges,
-  MarkerType,
   type Connection,
   type Edge,
   type EdgeChange,
@@ -70,11 +69,11 @@ const createStarterFlow = (): { nodes: Node<FlowNodeData>[]; edges: Edge[] } => 
     },
   ],
   edges: [
-    { id: 'e1', source: 'input-brief', target: 'processing-angle' },
-    { id: 'e2', source: 'processing-angle', target: 'decision-review' },
-    { id: 'e3', source: 'decision-review', sourceHandle: 'true', target: 'data-system' },
-    { id: 'e4', source: 'decision-review', sourceHandle: 'false', target: 'output-handoff' },
-    { id: 'e5', source: 'data-system', target: 'output-handoff' },
+    { id: 'e1', type: 'deletable', source: 'input-brief', target: 'processing-angle' },
+    { id: 'e2', type: 'deletable', source: 'processing-angle', target: 'decision-review' },
+    { id: 'e3', type: 'deletable', source: 'decision-review', sourceHandle: 'true', target: 'data-system' },
+    { id: 'e4', type: 'deletable', source: 'decision-review', sourceHandle: 'false', target: 'output-handoff' },
+    { id: 'e5', type: 'deletable', source: 'data-system', target: 'output-handoff' },
   ],
 });
 
@@ -112,7 +111,7 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   onConnect: (connection) => {
     set({
       edges: addEdge(
-        { ...connection, markerEnd: { type: MarkerType.ArrowClosed } },
+        { ...connection, type: 'deletable' },
         get().edges,
       ),
     });
