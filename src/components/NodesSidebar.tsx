@@ -2,13 +2,11 @@ import { useMemo, useState, type CSSProperties, type KeyboardEvent } from 'react
 import { Layers3, Palette, Search, Sparkles } from 'lucide-react';
 import { useTheme, type ThemeMode, type ThemePreset } from '@/DarkModeProvider';
 import { NODE_GROUPS, type NodeType } from '@/lib/nodeCatalog';
+import { useFlowStore } from '@/store/flowStore';
 
 interface NodesSidebarProps {
-  nodeCount: number;
-  edgeCount: number;
   onAddNode: (type: NodeType) => void;
   onLoadStarterFlow: () => void;
-  onClearCanvas: () => void;
 }
 
 const themeModes: { value: ThemeMode; label: string }[] = [
@@ -35,15 +33,13 @@ const themePresets: { value: ThemePreset; label: string; swatch: string }[] = [
   },
 ];
 
-export function NodesSidebar({
-  nodeCount,
-  edgeCount,
-  onAddNode,
-  onLoadStarterFlow,
-  onClearCanvas,
-}: NodesSidebarProps) {
+export function NodesSidebar({ onAddNode, onLoadStarterFlow }: NodesSidebarProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const { themeMode, themePreset, setThemeMode, setThemePreset } = useTheme();
+
+  const nodeCount = useFlowStore((s) => s.nodes.length);
+  const edgeCount = useFlowStore((s) => s.edges.length);
+  const clearCanvas = useFlowStore((s) => s.clearCanvas);
 
   const filteredGroups = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
@@ -122,7 +118,7 @@ export function NodesSidebar({
           <button type="button" className="sidebar-button sidebar-button--primary" onClick={onLoadStarterFlow}>
             Load starter flow
           </button>
-          <button type="button" className="sidebar-button" onClick={onClearCanvas}>
+          <button type="button" className="sidebar-button" onClick={clearCanvas}>
             Clear canvas
           </button>
         </div>
