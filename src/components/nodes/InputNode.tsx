@@ -22,7 +22,7 @@ const InputNode = memo(function InputNode({ id, data }: NodeProps<FlowNodeData>)
           />
         </div>
       </NodeFrame>
-      <Handle type="source" position={Position.Right} id="out" className="node-handle" />
+      <Handle type="source" position={Position.Right} className="node-handle" />
     </>
   );
 });

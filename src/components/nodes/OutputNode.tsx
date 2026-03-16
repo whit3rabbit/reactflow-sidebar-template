@@ -10,7 +10,7 @@ const OutputNode = memo(function OutputNode({ id, data }: NodeProps<FlowNodeData
 
   return (
     <>
-      <Handle type="target" position={Position.Left} id="in" className="node-handle" />
+      <Handle type="target" position={Position.Left} className="node-handle" />
       <NodeFrame type="output" data={data} onRemove={onRemove}>
         <div className="node-field">
           <label htmlFor={fieldId} className="node-label">Result summary</label>

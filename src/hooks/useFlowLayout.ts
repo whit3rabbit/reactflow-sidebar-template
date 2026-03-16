@@ -44,9 +44,9 @@ export function useFlowLayout() {
 
     applyLayout(layouted);
 
-    requestAnimationFrame(() => {
+    setTimeout(() => {
       void fitView(FIT_VIEW_OPTIONS);
-    });
+    }, 0);
   }, [applyLayout, fitView, getMeasuredNodes]);
 
   useEffect(() => {
