@@ -614,6 +614,41 @@
   backdrop-filter: blur(26px);
 }
 
+.canvas-topbar__shortcuts {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid hsl(var(--border) / 0.5);
+}
+
+.shortcut-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  color: hsl(var(--muted-foreground));
+  font-weight: 500;
+}
+
+.shortcut-key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  padding: 0 0.4rem;
+  border-radius: 0.4rem;
+  background: hsl(var(--accent) / 0.8);
+  border: 1px solid hsl(var(--border) / 0.8);
+  color: hsl(var(--foreground));
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.65rem;
+  box-shadow: 0 2px 0 hsl(var(--border));
+}
+
 .flow-stage {
   position: relative;
   min-height: 0;

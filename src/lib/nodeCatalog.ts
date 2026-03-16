@@ -11,6 +11,7 @@ import {
 export type NodeType = 'input' | 'basic' | 'output' | 'decision' | 'data' | 'processing';
 
 export interface FlowNodeData {
+  [key: string]: unknown;
   label?: string;
   title?: string;
   description?: string;
@@ -20,11 +21,7 @@ export interface FlowNodeData {
   condition?: string;
   content?: string;
   process?: string;
-  onChange?: (value: string, field: EditableNodeField) => void;
-  onRemove?: () => void;
 }
-
-export type EditableNodeField = Exclude<keyof FlowNodeData, 'onChange' | 'onRemove'>;
 
 export interface NodeCatalogItem {
   type: NodeType;
@@ -121,7 +118,7 @@ export function getNodeCatalogItem(type: NodeType): NodeCatalogItem {
 
 export function buildNodeData(
   type: NodeType,
-  overrides: Partial<Omit<FlowNodeData, 'onChange' | 'onRemove'>> = {}
+  overrides: Partial<FlowNodeData> = {}
 ): FlowNodeData {
   const defaults: Record<NodeType, FlowNodeData> = {
     input: {

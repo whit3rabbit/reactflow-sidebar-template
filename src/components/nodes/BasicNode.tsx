@@ -1,18 +1,22 @@
-import { memo } from 'react';
-import { Handle, Position, type NodeProps } from '@xyflow/react';
+import { memo, useCallback } from 'react';
+import { Handle, Position, useReactFlow, type NodeProps } from '@xyflow/react';
 import { NodeFrame } from './NodeFrame';
 import type { FlowNodeData } from '@/lib/nodeCatalog';
 
-const BasicNode = memo(({ data }: NodeProps<FlowNodeData>) => {
+const BasicNode = memo(function BasicNode({ id, data }: NodeProps) {
+  const nodeData = data as FlowNodeData;
+  const { updateNodeData, deleteElements } = useReactFlow();
+  const onRemove = useCallback(() => deleteElements({ nodes: [{ id }] }), [id, deleteElements]);
+
   return (
     <>
       <Handle type="target" position={Position.Left} className="node-handle" />
-      <NodeFrame type="basic" data={data}>
+      <NodeFrame type="basic" data={data} onRemove={onRemove}>
         <div className="node-field">
           <label className="node-label">Step name</label>
           <input
-            value={data.name ?? ''}
-            onChange={(event) => data.onChange?.(event.target.value, 'name')}
+            value={(data as any).name ?? ''}
+            onChange={(e) => updateNodeData(id, { name: e.target.value })}
             className="node-input nodrag"
             placeholder="Name this step"
           />
@@ -22,7 +26,5 @@ const BasicNode = memo(({ data }: NodeProps<FlowNodeData>) => {
     </>
   );
 });
-
-BasicNode.displayName = 'BasicNode';
 
 export default BasicNode;

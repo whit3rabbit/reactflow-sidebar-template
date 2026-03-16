@@ -1,18 +1,21 @@
-import { memo } from 'react';
-import { Handle, Position, type NodeProps } from '@xyflow/react';
+import { memo, useCallback } from 'react';
+import { Handle, Position, useReactFlow, type NodeProps } from '@xyflow/react';
 import { NodeFrame } from './NodeFrame';
 import type { FlowNodeData } from '@/lib/nodeCatalog';
 
-const OutputNode = memo(({ data }: NodeProps<FlowNodeData>) => {
+const OutputNode = memo(function OutputNode({ id, data }: NodeProps<FlowNodeData>) {
+  const { updateNodeData, deleteElements } = useReactFlow();
+  const onRemove = useCallback(() => deleteElements({ nodes: [{ id }] }), [id, deleteElements]);
+
   return (
     <>
       <Handle type="target" position={Position.Left} id="in" className="node-handle" />
-      <NodeFrame type="output" data={data}>
+      <NodeFrame type="output" data={data} onRemove={onRemove}>
         <div className="node-field">
           <label className="node-label">Result summary</label>
           <textarea
             value={data.outputValue ?? ''}
-            onChange={(event) => data.onChange?.(event.target.value, 'outputValue')}
+            onChange={(e) => updateNodeData(id, { outputValue: e.target.value })}
             className="node-input node-input--textarea nodrag"
             placeholder="What should this flow deliver?"
           />
@@ -21,7 +24,5 @@ const OutputNode = memo(({ data }: NodeProps<FlowNodeData>) => {
     </>
   );
 });
-
-OutputNode.displayName = 'OutputNode';
 
 export default OutputNode;

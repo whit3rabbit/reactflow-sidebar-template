@@ -5,10 +5,11 @@ import { getNodeCatalogItem, type FlowNodeData, type NodeType } from '@/lib/node
 interface NodeFrameProps {
   type: NodeType;
   data: FlowNodeData;
+  onRemove?: () => void;
   children: ReactNode;
 }
 
-export function NodeFrame({ type, data, children }: NodeFrameProps) {
+export function NodeFrame({ type, data, onRemove, children }: NodeFrameProps) {
   const meta = getNodeCatalogItem(type);
   const Icon = meta.icon;
   const title = data.title ?? meta.label;
@@ -31,11 +32,11 @@ export function NodeFrame({ type, data, children }: NodeFrameProps) {
           </div>
           <p className="node-description">{description}</p>
         </div>
-        {data.onRemove ? (
+        {onRemove ? (
           <button
             type="button"
             className="node-remove"
-            onClick={data.onRemove}
+            onClick={onRemove}
             aria-label={`Remove ${title}`}
           >
             <X size={14} />
