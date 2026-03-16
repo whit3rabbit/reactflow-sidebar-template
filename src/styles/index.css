@@ -296,7 +296,6 @@
 }
 
 .sidebar-hero__eyebrow,
-.canvas-topbar__eyebrow,
 .empty-state__badge {
   display: inline-flex;
   align-items: center;
@@ -311,8 +310,7 @@
   text-transform: uppercase;
 }
 
-.sidebar-hero__title,
-.canvas-topbar__title {
+.sidebar-hero__title {
   margin: 0.9rem 0 0.5rem;
   font-family: var(--font-display);
   font-size: clamp(1.65rem, 2vw, 2.4rem);
@@ -321,7 +319,6 @@
 }
 
 .sidebar-hero__copy,
-.canvas-topbar__copy,
 .empty-state p {
   margin: 0;
   color: hsl(var(--muted-foreground));
@@ -385,8 +382,7 @@
 }
 
 .sidebar-actions,
-.empty-state__actions,
-.canvas-topbar__actions {
+.empty-state__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
@@ -601,26 +597,21 @@
   gap: 1rem;
 }
 
-.canvas-topbar {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1.3rem 1.45rem;
-  border: 1px solid hsl(var(--border) / 0.7);
-  border-radius: calc(var(--radius) + 0.45rem);
-  background: linear-gradient(180deg, var(--panel-strong), var(--panel));
-  box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(26px);
-}
-
-.canvas-topbar__shortcuts {
+.canvas-shortcuts {
+  position: absolute;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
   display: flex;
   align-items: center;
   gap: 1.25rem;
-  margin-top: 1.25rem;
-  padding-top: 1rem;
-  border-top: 1px solid hsl(var(--border) / 0.5);
+  padding: 0.45rem 1rem;
+  border: 1px solid hsl(var(--border) / 0.5);
+  border-radius: 999px;
+  background: hsl(var(--popover) / 0.72);
+  backdrop-filter: blur(16px);
+  pointer-events: none;
 }
 
 .shortcut-item {
@@ -940,10 +931,6 @@
     min-height: 70vh;
   }
 
-  .canvas-topbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
 }
 
 @media (max-width: 640px) {

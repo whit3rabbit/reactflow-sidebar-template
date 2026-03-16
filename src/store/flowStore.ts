@@ -81,6 +81,8 @@ const createStarterFlow = (): { nodes: Node<FlowNodeData>[]; edges: Edge[] } => 
 interface FlowState {
   nodes: Node<FlowNodeData>[];
   edges: Edge[];
+  previousNodes: Node<FlowNodeData>[] | null;
+  previousEdges: Edge[] | null;
 
   onNodesChange: (changes: NodeChange<Node<FlowNodeData>>[]) => void;
   onEdgesChange: (changes: EdgeChange[]) => void;
@@ -89,11 +91,15 @@ interface FlowState {
   addNode: (type: NodeType, position: XYPosition, overrides?: Partial<FlowNodeData>) => void;
   loadStarterFlow: () => void;
   clearCanvas: () => void;
+  applyLayout: (layoutedNodes: Node<FlowNodeData>[]) => void;
+  undoLayout: () => void;
 }
 
 export const useFlowStore = create<FlowState>((set, get) => ({
   nodes: [],
   edges: [],
+  previousNodes: null,
+  previousEdges: null,
 
   onNodesChange: (changes) => {
     set({ nodes: applyNodeChanges(changes, get().nodes) });
@@ -128,6 +134,27 @@ export const useFlowStore = create<FlowState>((set, get) => ({
   },
 
   clearCanvas: () => {
-    set({ nodes: [], edges: [] });
+    set({ nodes: [], edges: [], previousNodes: null, previousEdges: null });
+  },
+
+  applyLayout: (layoutedNodes) => {
+    const { nodes, edges } = get();
+    set({
+      previousNodes: nodes,
+      previousEdges: edges,
+      nodes: layoutedNodes,
+    });
+  },
+
+  undoLayout: () => {
+    const { previousNodes, previousEdges } = get();
+    if (previousNodes && previousEdges) {
+      set({
+        nodes: previousNodes,
+        edges: previousEdges,
+        previousNodes: null,
+        previousEdges: null,
+      });
+    }
   },
 }));

@@ -10,7 +10,7 @@ import {
   MarkerType,
   type XYPosition,
 } from '@xyflow/react';
-import { Plus, Sparkles, Wand2 } from 'lucide-react';
+import { Plus, Sparkles } from 'lucide-react';
 import { useTheme } from './DarkModeProvider';
 import { NodesSidebar } from './components/NodesSidebar';
 import BasicNode from './components/nodes/BasicNode';
@@ -21,6 +21,7 @@ import DataNode from './components/nodes/DataNode';
 import ProcessingNode from './components/nodes/ProcessingNode';
 import { isNodeType, type NodeType } from './lib/nodeCatalog';
 import { useFlowStore } from './store/flowStore';
+import { getLayoutedElements } from './lib/autoLayout';
 
 const nodeTypes = {
   basic: BasicNode,
@@ -44,6 +45,9 @@ function AppContent() {
   const addNode = useFlowStore((s) => s.addNode);
   const storeLoadStarterFlow = useFlowStore((s) => s.loadStarterFlow);
   const clearCanvas = useFlowStore((s) => s.clearCanvas);
+  const applyLayout = useFlowStore((s) => s.applyLayout);
+  const undoLayout = useFlowStore((s) => s.undoLayout);
+  const hasPreviousLayout = useFlowStore((s) => s.previousNodes !== null);
 
   const getDefaultPosition = useCallback((): XYPosition => {
     const bounds = reactFlowWrapper.current?.getBoundingClientRect();
@@ -68,8 +72,23 @@ function AppContent() {
     [addNode, getDefaultPosition]
   );
 
-  const loadStarterFlow = useCallback(() => {
+  const autoLayout = useCallback(async () => {
+    const currentNodes = useFlowStore.getState().nodes;
+    const currentEdges = useFlowStore.getState().edges;
+    if (currentNodes.length === 0) return;
+
+    const layouted = await getLayoutedElements(currentNodes, currentEdges);
+    applyLayout(layouted);
+    requestAnimationFrame(() => {
+      void fitView({ padding: 0.18, duration: 500 });
+    });
+  }, [applyLayout, fitView]);
+
+  const loadStarterFlow = useCallback(async () => {
     storeLoadStarterFlow();
+    const { nodes: newNodes, edges: newEdges } = useFlowStore.getState();
+    const layouted = await getLayoutedElements(newNodes, newEdges);
+    useFlowStore.setState({ nodes: layouted });
     requestAnimationFrame(() => {
       void fitView({ padding: 0.18, duration: 500 });
     });
@@ -115,45 +134,25 @@ function AppContent() {
       <NodesSidebar
         onAddNode={createNode}
         onLoadStarterFlow={loadStarterFlow}
+        onAutoLayout={autoLayout}
+        onUndoLayout={undoLayout}
+        hasUndoLayout={hasPreviousLayout}
       />
 
       <main className="canvas-shell">
-        <header className="canvas-topbar">
-          <div>
-            <div className="canvas-topbar__eyebrow">
-              <Wand2 size={14} />
-              Visual editor
-            </div>
-            <h2 className="canvas-topbar__title">Build flows with clearer hierarchy and better defaults.</h2>
-            <p className="canvas-topbar__copy">
-              The old layout worked like a demo. This one behaves more like a workspace.
-            </p>
-            <div className="canvas-topbar__shortcuts">
-              <div className="shortcut-item">
-                <span className="shortcut-key">Del</span>
-                <span className="shortcut-key">&#x232B;</span>
-                <span>Delete selected</span>
-              </div>
-              <div className="shortcut-item">
-                <span className="shortcut-key">Space</span>
-                <span>Drag canvas</span>
-              </div>
-            </div>
-          </div>
-          <div className="canvas-topbar__actions">
-            <button type="button" className="toolbar-button toolbar-button--primary" onClick={loadStarterFlow}>
-              <Sparkles size={16} />
-              Starter flow
-            </button>
-            <button type="button" className="toolbar-button" onClick={() => createNode('basic')}>
-              <Plus size={16} />
-              Add node
-            </button>
-          </div>
-        </header>
-
         <div className="flow-stage" ref={reactFlowWrapper}>
           <div className="flow-stage__veil" />
+          <div className="canvas-shortcuts">
+            <div className="shortcut-item">
+              <span className="shortcut-key">Del</span>
+              <span className="shortcut-key">&#x232B;</span>
+              <span>Delete selected</span>
+            </div>
+            <div className="shortcut-item">
+              <span className="shortcut-key">Space</span>
+              <span>Drag canvas</span>
+            </div>
+          </div>
           <ReactFlow
             nodes={nodes}
             edges={edges}

@@ -1,5 +1,5 @@
 import { useMemo, useState, type CSSProperties, type KeyboardEvent } from 'react';
-import { Layers3, Palette, Search, Sparkles } from 'lucide-react';
+import { Layers3, LayoutGrid, Palette, Search, Undo2 } from 'lucide-react';
 import { useTheme, type ThemeMode, type ThemePreset } from '@/DarkModeProvider';
 import { NODE_GROUPS, type NodeType } from '@/lib/nodeCatalog';
 import { useFlowStore } from '@/store/flowStore';
@@ -7,6 +7,9 @@ import { useFlowStore } from '@/store/flowStore';
 interface NodesSidebarProps {
   onAddNode: (type: NodeType) => void;
   onLoadStarterFlow: () => void;
+  onAutoLayout: () => void;
+  onUndoLayout: () => void;
+  hasUndoLayout: boolean;
 }
 
 const themeModes: { value: ThemeMode; label: string }[] = [
@@ -33,7 +36,7 @@ const themePresets: { value: ThemePreset; label: string; swatch: string }[] = [
   },
 ];
 
-export function NodesSidebar({ onAddNode, onLoadStarterFlow }: NodesSidebarProps) {
+export function NodesSidebar({ onAddNode, onLoadStarterFlow, onAutoLayout, onUndoLayout, hasUndoLayout }: NodesSidebarProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const { themeMode, themePreset, setThemeMode, setThemePreset } = useTheme();
 
@@ -82,14 +85,6 @@ export function NodesSidebar({ onAddNode, onLoadStarterFlow }: NodesSidebarProps
   return (
     <aside className="sidebar-shell custom-scroll">
       <div className="sidebar-hero">
-        <div className="sidebar-hero__eyebrow">
-          <Sparkles size={14} />
-          Workflow Studio
-        </div>
-        <h1 className="sidebar-hero__title">Modernize the board, not just the paint.</h1>
-        <p className="sidebar-hero__copy">
-          Click a card to place a node quickly, or drag it into the canvas for precise layout.
-        </p>
         <div className="sidebar-stats">
           <div className="stat-card">
             <span>Nodes</span>
@@ -118,6 +113,18 @@ export function NodesSidebar({ onAddNode, onLoadStarterFlow }: NodesSidebarProps
           <button type="button" className="sidebar-button sidebar-button--primary" onClick={onLoadStarterFlow}>
             Load starter flow
           </button>
+          {nodeCount > 0 && (
+            <button type="button" className="sidebar-button" onClick={onAutoLayout}>
+              <LayoutGrid size={14} />
+              Auto layout
+            </button>
+          )}
+          {hasUndoLayout && (
+            <button type="button" className="sidebar-button" onClick={onUndoLayout}>
+              <Undo2 size={14} />
+              Undo layout
+            </button>
+          )}
           <button type="button" className="sidebar-button" onClick={clearCanvas}>
             Clear canvas
           </button>

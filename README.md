@@ -1,86 +1,76 @@
 # React Flow Sidebar Template
 
-This project is a template for creating flow diagrams with a customizable sidebar using React Flow. It provides a dark-themed interface with various node types that can be dragged and dropped onto the canvas.
+A template for creating flow diagrams with a customizable sidebar using React Flow. Dark-themed interface with drag-and-drop node types.
 
 ![Project Screenshot](./screenshot.png)
 
 ## Features
 
-- Dark-themed interface
-- Customizable sidebar with node categories
-- Drag and drop functionality for creating nodes
+- Dark-themed interface with light mode toggle
+- Customizable sidebar with node categories and search filtering
+- Drag and drop nodes onto the canvas
 - Multiple node types (Basic, Input, Output, Processing, Decision, Data)
-- Auto-layout functionality
+- Auto-layout via elkjs
+- Zustand-based state management
+
+## Tech Stack
+
+- React 19 + TypeScript
+- @xyflow/react v12
+- Vite
+- Tailwind CSS v4 (CSS-first config)
+- Zustand (state management)
+- elkjs (auto-layout)
 
 ## Project Structure
 
 ```
 reactflow-sidebar-template/
-├── public/
-│   └── vite.svg
 ├── src/
 │   ├── components/
 │   │   ├── nodes/
-│   │   │   ├── BasicNode.jsx
-│   │   │   ├── DataNode.jsx
-│   │   │   ├── DecisionNode.jsx
-│   │   │   ├── InputNode.jsx
-│   │   │   ├── OutputNode.jsx
-│   │   │   └── ProcessingNode.jsx
-│   │   ├── FlowCanvas.jsx
-│   │   └── Sidebar.jsx
+│   │   │   ├── BasicNode.tsx
+│   │   │   ├── DataNode.tsx
+│   │   │   ├── DecisionNode.tsx
+│   │   │   ├── InputNode.tsx
+│   │   │   ├── NodeFrame.tsx        # Shared node wrapper
+│   │   │   ├── OutputNode.tsx
+│   │   │   └── ProcessingNode.tsx
+│   │   └── NodesSidebar.tsx
+│   ├── lib/
+│   │   └── nodeCatalog.ts           # Node type registry
+│   ├── store/
+│   │   └── flowStore.ts             # Zustand store
 │   ├── styles/
-│   │   └── global.css
 │   │   └── index.css
-│   ├── App.jsx
-│   ├── DarkModeProvider.jsx
-│   └── main.jsx
-├── .eslintrc.cjs
-├── .gitignore
+│   ├── App.tsx
+│   ├── DarkModeProvider.tsx
+│   └── main.tsx
+├── eslint.config.mjs
 ├── index.html
 ├── package.json
-├── README.md
-├── screenshot.png
-├── tailwind.config.js
+├── tsconfig.json
 └── vite.config.js
 ```
 
 ## Prerequisites
 
-Before you begin, ensure you have met the following requirements:
+- [Bun](https://bun.sh) (version 1.0 or later)
 
-- You have installed Node.js (version 14.0 or later recommended)
-- You have installed Yarn package manager
+## Getting Started
 
-## Installing and Running React Flow Sidebar Template
+```bash
+git clone https://github.com/whit3rabbit/reactflow-sidebar-template.git
+cd reactflow-sidebar-template
+bun install
+bun dev
+```
 
-To install and run this project, follow these steps:
+Open `http://localhost:5173` to view the application.
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/whit3rabbit/reactflow-sidebar-template.git
-   ```
+## Usage
 
-2. Navigate to the project directory:
-   ```
-   cd reactflow-sidebar-template
-   ```
-
-3. Install the dependencies:
-   ```
-   yarn install
-   ```
-
-4. Start the development server:
-   ```
-   yarn dev
-   ```
-
-5. Open your browser and visit `http://localhost:5173` to view the application.
-
-## Using React Flow Sidebar Template
-
-- Use the sidebar to select node types
+- Use the sidebar to browse and search node types
 - Drag and drop nodes onto the canvas
 - Connect nodes by dragging from one handle to another
-- Use the "Auto Layout" button to automatically arrange your nodes
+- Use the "Auto Layout" button to automatically arrange nodes
