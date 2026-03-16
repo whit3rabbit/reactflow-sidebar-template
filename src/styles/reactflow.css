@@ -1,0 +1,60 @@
+.react-flow {
+  background: transparent;
+}
+
+.react-flow__renderer,
+.react-flow__viewport {
+  z-index: 2;
+}
+
+.react-flow__pane {
+  cursor: crosshair;
+}
+
+.react-flow__controls,
+.react-flow__minimap {
+  border: 1px solid hsl(var(--border) / 0.8) !important;
+  border-radius: calc(var(--radius) - 0.1rem) !important;
+  overflow: hidden;
+  background: hsl(var(--popover) / 0.84) !important;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(20px);
+}
+
+.react-flow__controls-button {
+  border-bottom: 1px solid hsl(var(--border) / 0.65) !important;
+  background: transparent !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+.react-flow__controls-button:hover {
+  background: hsl(var(--accent) / 0.85) !important;
+}
+
+.react-flow__attribution {
+  background: hsl(var(--popover) / 0.78) !important;
+  border-top-left-radius: 0.8rem;
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.react-flow__edge-path {
+  stroke: var(--connection);
+  stroke-width: 2;
+  transition: stroke 0.15s ease-in-out;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: hsl(var(--selected));
+  stroke-width: 3;
+  animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    filter: drop-shadow(0 0 3px hsl(var(--selected) / 0.7));
+  }
+
+  to {
+    filter: drop-shadow(0 0 6px hsl(var(--selected) / 0.9));
+  }
+}

@@ -6,10 +6,12 @@ A template for creating flow diagrams with a customizable sidebar using React Fl
 
 ## Features
 
-- Dark-themed interface with light mode toggle
+- Dark/light mode with theme presets
 - Customizable sidebar with node categories and search filtering
 - Drag and drop nodes onto the canvas
 - Multiple node types (Basic, Input, Output, Processing, Decision, Data)
+- Deletable edges with hover controls
+- Keyboard shortcuts
 - Auto-layout via elkjs
 - Zustand-based state management
 
@@ -21,6 +23,7 @@ A template for creating flow diagrams with a customizable sidebar using React Fl
 - Tailwind CSS v4 (CSS-first config)
 - Zustand (state management)
 - elkjs (auto-layout)
+- lucide-react (icons)
 
 ## Project Structure
 
@@ -28,6 +31,8 @@ A template for creating flow diagrams with a customizable sidebar using React Fl
 reactflow-sidebar-template/
 ├── src/
 │   ├── components/
+│   │   ├── edges/
+│   │   │   └── DeletableEdge.tsx
 │   │   ├── nodes/
 │   │   │   ├── BasicNode.tsx
 │   │   │   ├── DataNode.tsx
@@ -37,12 +42,24 @@ reactflow-sidebar-template/
 │   │   │   ├── OutputNode.tsx
 │   │   │   └── ProcessingNode.tsx
 │   │   └── NodesSidebar.tsx
+│   ├── hooks/
+│   │   ├── useFlowDragDrop.ts       # Drag-and-drop logic
+│   │   └── useFlowLayout.ts         # Auto-layout and starter flow
 │   ├── lib/
-│   │   └── nodeCatalog.ts           # Node type registry
+│   │   ├── autoLayout.ts            # elkjs layout engine
+│   │   ├── nodeCatalog.ts           # Node type registry
+│   │   └── themeConfig.ts           # Theme modes and presets
 │   ├── store/
 │   │   └── flowStore.ts             # Zustand store
 │   ├── styles/
-│   │   └── index.css
+│   │   ├── index.css                # Main entry, imports all modules
+│   │   ├── base.css                 # CSS variables, theme presets
+│   │   ├── app.css                  # App shell layout
+│   │   ├── sidebar.css              # Sidebar and node library
+│   │   ├── canvas.css               # Canvas topbar and controls
+│   │   ├── nodes.css                # Custom node styling
+│   │   ├── reactflow.css            # ReactFlow overrides
+│   │   └── responsive.css           # Media query breakpoints
 │   ├── App.tsx
 │   ├── DarkModeProvider.tsx
 │   └── main.tsx

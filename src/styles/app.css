@@ -1,0 +1,31 @@
+.app-shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(320px, 380px) minmax(0, 1fr);
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.app-shell__glow {
+  pointer-events: none;
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(80px);
+  opacity: 0.8;
+}
+
+.app-shell__glow--one {
+  left: -5rem;
+  top: -4rem;
+  width: 18rem;
+  height: 18rem;
+  background: var(--shell-glow-a);
+}
+
+.app-shell__glow--two {
+  right: -4rem;
+  bottom: -6rem;
+  width: 20rem;
+  height: 20rem;
+  background: var(--shell-glow-b);
+}

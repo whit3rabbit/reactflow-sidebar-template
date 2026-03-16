@@ -1,7 +1,9 @@
-import ELK from 'elkjs/lib/elk.bundled.js';
+import ELK from 'elkjs/lib/elk-api.js';
 import type { Node, Edge } from '@xyflow/react';
 
-const elk = new ELK();
+const elk = new ELK({
+  workerUrl: new URL('elkjs/lib/elk-worker.min.js', import.meta.url).href,
+});
 
 const DEFAULT_WIDTH = 290;
 const DEFAULT_HEIGHT = 180;
@@ -33,8 +35,8 @@ export async function getLayoutedElements(
     },
     children: nodes.map((node) => ({
       id: node.id,
-      width: DEFAULT_WIDTH,
-      height: DEFAULT_HEIGHT,
+      width: node.measured?.width ?? node.width ?? DEFAULT_WIDTH,
+      height: node.measured?.height ?? node.height ?? DEFAULT_HEIGHT,
     })),
     edges: edges.map((edge) => ({
       id: edge.id,

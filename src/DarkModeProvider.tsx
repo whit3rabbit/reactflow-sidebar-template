@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 
 export type ThemeMode = 'system' | 'light' | 'dark';
 export type ThemePreset = 'graphite' | 'ocean' | 'ember';
-type ResolvedTheme = 'light' | 'dark';
+export type ResolvedTheme = 'light' | 'dark';
 
 interface ThemeContextValue {
   themeMode: ThemeMode;

@@ -1,0 +1,210 @@
+@layer base {
+  :root {
+    --font-sans: 'Manrope', 'Avenir Next', 'Segoe UI', sans-serif;
+    --font-display: 'Space Grotesk', 'Manrope', sans-serif;
+
+    --background: 216 33% 97%;
+    --foreground: 222 35% 14%;
+    --muted: 216 24% 92%;
+    --muted-foreground: 220 16% 39%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 35% 14%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 35% 14%;
+    --border: 218 22% 84%;
+    --input: 216 26% 92%;
+    --primary: 224 78% 56%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 218 28% 90%;
+    --secondary-foreground: 222 35% 14%;
+    --accent: 216 32% 94%;
+    --accent-foreground: 222 35% 14%;
+    --destructive: 0 72% 53%;
+    --destructive-foreground: 210 40% 98%;
+    --radius: 1.25rem;
+    --ring: 224 78% 56%;
+    --round-btn-shadow: #00000063;
+    --ice: #31a3cc;
+    --selected: #4f46e5;
+    --primary-glow: rgba(79, 70, 229, 0.24);
+    --panel: rgba(255, 255, 255, 0.76);
+    --panel-strong: rgba(255, 255, 255, 0.92);
+    --canvas-sheen: rgba(255, 255, 255, 0.5);
+    --shell-glow-a: rgba(59, 130, 246, 0.18);
+    --shell-glow-b: rgba(139, 92, 246, 0.16);
+    --connection: rgba(71, 85, 105, 0.7);
+    --success: #22c55e;
+    --danger: #f97316;
+    --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.12);
+    --shadow-md: 0 18px 40px rgba(15, 23, 42, 0.1);
+
+    --error-background: #fef2f2;
+    --error-foreground: #991b1b;
+    --error: #991b1b;
+
+    --success-background: #f0fdf4;
+    --success-foreground: #14532d;
+
+    --info-background: #f0f4fd;
+    --info-foreground: #141653;
+
+    --high-indigo: #4338ca;
+    --medium-indigo: #6366f1;
+    --low-indigo: #e0e7ff;
+
+    --beta-background: rgb(219 234 254);
+    --beta-foreground: rgb(37 99 235);
+    --beta-foreground-soft: rgb(37 99 235 / 80%);
+
+    --chat-bot-icon: #afe6ef;
+    --chat-user-icon: #aface9;
+
+    --component-icon: #d8598a;
+    --flow-icon: #2f67d0;
+    --hover: #f2f4f5;
+    --disabled-run: #6366f1;
+
+    --blur-shared: #151923de;
+    --build-trigger: #dc735b;
+    --chat-trigger: #5c8be1;
+    --chat-trigger-disabled: #b4c3da;
+    --status-red: #ef4444;
+    --status-yellow: #eab308;
+    --chat-send: #059669;
+    --status-green: #4ade80;
+    --status-blue: #2563eb;
+    --status-gray: #6b7280;
+  }
+
+  :root.dark {
+    --background: 225 31% 8%;
+    --foreground: 215 33% 92%;
+    --ice: #60a5fa;
+    --hover: #1a2436;
+    --disabled-run: #6366f1;
+    --selected: #7dd3fc;
+
+    --muted: 223 24% 14%;
+    --muted-foreground: 218 17% 66%;
+
+    --popover: 223 33% 10%;
+    --popover-foreground: 214 32% 90%;
+
+    --card: 223 26% 12%;
+    --card-foreground: 214 32% 90%;
+
+    --border: 216 19% 23%;
+    --input: 222 24% 16%;
+
+    --primary: 200 92% 72%;
+    --primary-foreground: 222 47% 8%;
+
+    --secondary: 223 22% 15%;
+    --secondary-foreground: 214 32% 90%;
+
+    --accent: 223 22% 17%;
+    --accent-foreground: 214 32% 92%;
+
+    --destructive: 0 63% 38%;
+    --destructive-foreground: 210 40% 98%;
+
+    --ring: 200 92% 72%;
+    --panel: rgba(15, 23, 42, 0.62);
+    --panel-strong: rgba(15, 23, 42, 0.86);
+    --canvas-sheen: rgba(59, 130, 246, 0.08);
+    --shell-glow-a: rgba(59, 130, 246, 0.18);
+    --shell-glow-b: rgba(168, 85, 247, 0.18);
+    --primary-glow: rgba(56, 189, 248, 0.22);
+    --success: #34d399;
+    --danger: #fb7185;
+    --shadow-lg: 0 28px 60px rgba(2, 6, 23, 0.52);
+    --shadow-md: 0 18px 40px rgba(2, 6, 23, 0.44);
+
+    --success-background: #022c22;
+    --success-foreground: #ecfdf5;
+
+    --error-foreground: #fef2f2;
+    --error-background: #450a0a;
+    --error: #991b1b;
+
+    --info-foreground: #eff6ff;
+    --info-background: #172554;
+
+    --high-indigo: #4338ca;
+    --medium-indigo: #6366f1;
+    --low-indigo: #e0e7ff;
+
+    --component-icon: #c35f85;
+    --flow-icon: #2467e4;
+
+    --blur-shared: #151923d2;
+    --build-trigger: #dc735b;
+    --chat-trigger: #5c8be1;
+    --chat-trigger-disabled: #2d3b54;
+    --status-red: #ef4444;
+    --status-yellow: #eab308;
+    --chat-send: #059669;
+    --status-green: #4ade80;
+    --status-blue: #2563eb;
+    --connection: #6d6c6c;
+
+    --beta-background: rgb(37 99 235);
+    --beta-foreground: rgb(219 234 254);
+    --beta-foreground-soft: rgb(219 234 254);
+
+    --chat-bot-icon: #235d70;
+    --chat-user-icon: #4f3d6e;
+  }
+
+  :root[data-theme='ocean'] {
+    --primary: 190 90% 46%;
+    --ring: 190 90% 46%;
+    --selected: #14b8a6;
+    --primary-glow: rgba(20, 184, 166, 0.24);
+    --shell-glow-a: rgba(34, 211, 238, 0.18);
+    --shell-glow-b: rgba(20, 184, 166, 0.18);
+  }
+
+  :root.dark[data-theme='ocean'] {
+    --primary: 180 84% 65%;
+    --ring: 180 84% 65%;
+    --selected: #2dd4bf;
+    --primary-glow: rgba(45, 212, 191, 0.22);
+  }
+
+  :root[data-theme='ember'] {
+    --primary: 12 90% 58%;
+    --ring: 12 90% 58%;
+    --selected: #f97316;
+    --primary-glow: rgba(249, 115, 22, 0.22);
+    --shell-glow-a: rgba(251, 113, 133, 0.18);
+    --shell-glow-b: rgba(251, 146, 60, 0.18);
+  }
+
+  :root.dark[data-theme='ember'] {
+    --primary: 24 95% 66%;
+    --ring: 24 95% 66%;
+    --selected: #fb923c;
+    --primary-glow: rgba(251, 146, 60, 0.22);
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    background:
+      radial-gradient(circle at top left, var(--shell-glow-a), transparent 32%),
+      radial-gradient(circle at top right, var(--shell-glow-b), transparent 28%),
+      hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}

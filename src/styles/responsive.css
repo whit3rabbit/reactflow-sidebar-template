@@ -1,0 +1,55 @@
+@media (max-width: 980px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-shell {
+    height: auto;
+    max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid hsl(var(--border) / 0.65);
+  }
+
+  .canvas-shell {
+    min-height: 70vh;
+  }
+
+  .canvas-topbar {
+    gap: 0.45rem;
+  }
+
+  .canvas-topbar__group--shortcuts {
+    display: none;
+  }
+
+}
+
+@media (max-width: 640px) {
+  .sidebar-shell,
+  .canvas-shell {
+    padding: 0.9rem;
+  }
+
+  .sidebar-stats,
+  .palette-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mode-toggle {
+    grid-template-columns: 1fr;
+  }
+
+  .custom-node {
+    min-width: 16rem;
+  }
+
+  .canvas-topbar {
+    top: 0.55rem;
+    width: calc(100% - 1rem);
+    overflow-x: auto;
+  }
+
+  .canvas-topbar__group {
+    width: max-content;
+  }
+}

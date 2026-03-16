@@ -1,49 +1,21 @@
-import { useMemo, useState, type CSSProperties, type KeyboardEvent } from 'react';
-import { Layers3, LayoutGrid, Palette, Search, Undo2 } from 'lucide-react';
-import { useTheme, type ThemeMode, type ThemePreset } from '@/DarkModeProvider';
+import { useMemo, useState, type CSSProperties } from 'react';
+import { Layers3, Palette, Search } from 'lucide-react';
+import { useTheme } from '@/DarkModeProvider';
 import { NODE_GROUPS, type NodeType } from '@/lib/nodeCatalog';
 import { useFlowStore } from '@/store/flowStore';
+import { themeModes, themePresets } from '@/lib/themeConfig';
 
 interface NodesSidebarProps {
   onAddNode: (type: NodeType) => void;
   onLoadStarterFlow: () => void;
-  onAutoLayout: () => void;
-  onUndoLayout: () => void;
-  hasUndoLayout: boolean;
 }
 
-const themeModes: { value: ThemeMode; label: string }[] = [
-  { value: 'dark', label: 'Dark' },
-  { value: 'light', label: 'Light' },
-  { value: 'system', label: 'System' },
-];
-
-const themePresets: { value: ThemePreset; label: string; swatch: string }[] = [
-  {
-    value: 'graphite',
-    label: 'Graphite',
-    swatch: 'linear-gradient(135deg, #7dd3fc 0%, #8b5cf6 100%)',
-  },
-  {
-    value: 'ocean',
-    label: 'Ocean',
-    swatch: 'linear-gradient(135deg, #38bdf8 0%, #14b8a6 100%)',
-  },
-  {
-    value: 'ember',
-    label: 'Ember',
-    swatch: 'linear-gradient(135deg, #fb7185 0%, #f59e0b 100%)',
-  },
-];
-
-export function NodesSidebar({ onAddNode, onLoadStarterFlow, onAutoLayout, onUndoLayout, hasUndoLayout }: NodesSidebarProps) {
+export function NodesSidebar({ onAddNode, onLoadStarterFlow }: NodesSidebarProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const { themeMode, themePreset, setThemeMode, setThemePreset } = useTheme();
 
   const nodeCount = useFlowStore((s) => s.nodes.length);
   const edgeCount = useFlowStore((s) => s.edges.length);
-  const clearCanvas = useFlowStore((s) => s.clearCanvas);
-
   const filteredGroups = useMemo(() => {
     const query = searchTerm.trim().toLowerCase();
 
@@ -70,16 +42,9 @@ export function NodesSidebar({ onAddNode, onLoadStarterFlow, onAutoLayout, onUnd
     );
   }, [searchTerm]);
 
-  const onDragStart = (event: React.DragEvent<HTMLDivElement>, nodeType: NodeType) => {
+  const onDragStart = (event: React.DragEvent<HTMLButtonElement>, nodeType: NodeType) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.effectAllowed = 'move';
-  };
-
-  const onCardKeyDown = (event: KeyboardEvent<HTMLDivElement>, nodeType: NodeType) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      onAddNode(nodeType);
-    }
   };
 
   return (
@@ -112,21 +77,6 @@ export function NodesSidebar({ onAddNode, onLoadStarterFlow, onAutoLayout, onUnd
         <div className="sidebar-actions">
           <button type="button" className="sidebar-button sidebar-button--primary" onClick={onLoadStarterFlow}>
             Load starter flow
-          </button>
-          {nodeCount > 0 && (
-            <button type="button" className="sidebar-button" onClick={onAutoLayout}>
-              <LayoutGrid size={14} />
-              Auto layout
-            </button>
-          )}
-          {hasUndoLayout && (
-            <button type="button" className="sidebar-button" onClick={onUndoLayout}>
-              <Undo2 size={14} />
-              Undo layout
-            </button>
-          )}
-          <button type="button" className="sidebar-button" onClick={clearCanvas}>
-            Clear canvas
           </button>
         </div>
       </div>
@@ -194,13 +144,11 @@ export function NodesSidebar({ onAddNode, onLoadStarterFlow, onAutoLayout, onUnd
                 const Icon = node.icon;
 
                 return (
-                  <div
+                  <button
                     key={node.type}
-                    role="button"
-                    tabIndex={0}
+                    type="button"
                     draggable
                     onClick={() => onAddNode(node.type)}
-                    onKeyDown={(event) => onCardKeyDown(event, node.type)}
                     onDragStart={(event) => onDragStart(event, node.type)}
                     className="node-library-card"
                     style={{ '--card-accent': node.accent } as CSSProperties}
@@ -215,7 +163,7 @@ export function NodesSidebar({ onAddNode, onLoadStarterFlow, onAutoLayout, onUnd
                       </div>
                       <p>{node.description}</p>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>

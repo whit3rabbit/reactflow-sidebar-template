@@ -15,11 +15,13 @@ React + TypeScript app using @xyflow/react (v12) for node-based flow editing. Vi
 
 **Entry flow:** `main.tsx` -> `DarkModeProvider` -> `App` (wrapped in `ReactFlowProvider`)
 
-**App.tsx** registers custom node types and wires up drag-and-drop from the sidebar onto the canvas. It delegates all node/edge state to the Zustand store.
+**App.tsx** registers custom node types and composes the canvas UI. Drag-drop logic lives in `src/hooks/useFlowDragDrop.ts`; auto-layout and starter flow loading live in `src/hooks/useFlowLayout.ts`. App delegates all node/edge state to the Zustand store.
 
 **State management:** `src/store/flowStore.ts` -- a Zustand store that owns nodes, edges, and all mutations (`addNode`, `onConnect`, `loadStarterFlow`, `clearCanvas`). Components consume it via `useFlowStore` selectors. Uses controlled mode (nodes/edges as props) intentionally for clarity; if performance degrades at scale, see the uncontrolled flow pattern in App.tsx comments.
 
-**Drag-and-drop pattern:** Sidebar sets `application/reactflow` data on drag start. App's `onDrop` reads the type and creates a new node at the drop position via `screenToFlowPosition`.
+**Drag-and-drop pattern:** Sidebar sets `application/reactflow` data on drag start. `useFlowDragDrop` reads the type and creates a new node at the drop position via `screenToFlowPosition`.
+
+**Theme config:** `src/lib/themeConfig.ts` is the single source of truth for theme modes, theme presets (with swatch gradients), and per-preset grid colors. Both `NodesSidebar` and `App` import from it.
 
 **Node catalog:** `src/lib/nodeCatalog.ts` is the single source of truth for node type definitions -- types, labels, icons (Lucide), categories, and default data. Both the sidebar and store import from it.
 
@@ -37,6 +39,14 @@ React + TypeScript app using @xyflow/react (v12) for node-based flow editing. Vi
 
 - Path alias: `@/` maps to `./src/` (configured in both vite.config.js and tsconfig.json)
 - Tailwind v4 CSS-first: no `tailwind.config.js`. Directives (`@import "tailwindcss"`, `@custom-variant`, `@utility`) live in `src/styles/index.css`.
-- Dark mode: managed via `DarkModeProvider` context + `.dark` class on `<html>`. `@custom-variant dark` in CSS. Variables in `index.css` define light/dark theme tokens.
+- Dark mode: managed via `DarkModeProvider` context + `.dark` class on `<html>`. `@custom-variant dark` in CSS.
 - Styling is almost entirely custom CSS classes (BEM-style) using `hsl(var(--...))` custom properties. Very few Tailwind utility classes are used. The only custom utility is `custom-scroll` (defined via `@utility` in index.css).
+- CSS is split into focused modules imported from `src/styles/index.css`:
+  - `base.css` -- CSS variables (`:root`, `.dark`, theme presets), typography reset
+  - `app.css` -- `.app-shell` layout and glow effects
+  - `sidebar.css` -- sidebar, stat cards, buttons, search, node library cards
+  - `canvas.css` -- canvas topbar, chips, shortcuts, flow stage, empty state
+  - `nodes.css` -- custom node frames, handles, inputs, edge remove buttons
+  - `reactflow.css` -- ReactFlow control/minimap/attribution overrides, edge animations
+  - `responsive.css` -- media query breakpoints (980px, 640px)
 - Node components must use `NodeProps<FlowNodeData>` as their props type -- never bare `NodeProps` with `as any` casts. The `FlowNodeData` interface in `nodeCatalog.ts` defines all valid data fields.
